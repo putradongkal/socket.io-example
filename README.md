@@ -26,6 +26,7 @@ Ini adalah contoh penggunaan <a href="https://socket.io" target="_blank">socket.
 
 <h1>Preview Aplikasi</h1>
 
+<a href="https://res.cloudinary.com/putradongkal/image/upload/v1658021664/git/test_hoerxk.gif" target="_blank">Gambar Gerak</a><br>
 ![Running](https://res.cloudinary.com/putradongkal/image/upload/v1658021664/git/test_hoerxk.gif)
 
 
