@@ -1,0 +1,151 @@
+<html lang="id" class="h-100">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Contoh socket.io">
+        <meta name="author" content="Irfan">
+        <title>Komputer B - Contoh Socket.io</title>
+        <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <!-- Favicons -->
+        <link rel="apple-touch-icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+        <link rel="icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+        <link rel="icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+        <link rel="manifest" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/manifest.json">
+        <link rel="mask-icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+        <link rel="icon" href="https://getbootstrap.com/docs/5.2/assets/img/favicons/favicon.ico">
+        <meta name="theme-color" content="#7952b3">
+
+        <style>
+            #toast-container { text-align: left; }
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+                }
+            }
+        </style>
+
+        <link href="https://getbootstrap.com/docs/5.2/examples/cover/cover.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    </head>
+    <body class="d-flex h-100 text-center text-white bg-dark">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <header class="mb-auto">
+                <div>
+                    <h3 class="float-md-start mb-0">Contoh Socket.io</h3>
+                    <nav class="nav nav-masthead justify-content-center float-md-end">
+                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="komputer-a.html" target="_blank">Komputer A</a>
+                        <a class="nav-link active" aria-current="page" href="komputer-b.html" target="_blank">Komputer B</a>
+                    </nav>
+                </div>
+            </header>
+
+            <main class="px-3">
+                <h1>Komputer B</h1>
+                <p class="lead notifikasi-komputer-a">&nbsp;</p>
+                <p class="lead">
+                    <button class="btn btn-lg btn-primary fw-bold btn-komputer btn-komputer-a" disabled>Panggil Komputer A</button>
+                </p>
+                <p>
+                    <small>Status <span class="status">...</span></small>
+                </p>
+
+            </main>
+
+            <footer class="mt-auto text-white-50">
+                <p>Github <a href="https://github.com/putradongkal" target="_blank" class="text-white">@putradongkal</a></p>
+            </footer>
+        </div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        const socket = io.connect( 'http://'+window.location.hostname+':3000');
+        const elStatus = $('.status');
+        const btnKomputerA = $('.btn-komputer-a');
+            
+        var connectSound = new Audio('assets/sound/connect_1.mp3');
+        var disconnectSound = new Audio('assets/sound/disconnect_2.mp3');
+
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "5000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        /* SOCKET ERROR */
+        socket.on("connect_error", () => {
+            elStatus.html('<span class="badge bg-danger">Tidak terhubung</span>');
+        });
+
+        /* SOCKET TERHUBUNG */
+        socket.on("connect", () => {
+            console.log(socket.connected);
+
+            elStatus.html('<span class="badge bg-success">Terhubung</span>');
+            btnKomputerA.prop('disabled', false);
+
+            if($('.swal2-confirm').length)
+                $('.swal2-confirm').click();
+                
+            connectSound.play();
+        });
+
+        /* SOCKET TERPUTUS */
+        socket.on("disconnect", () => {
+            console.log(socket.connected);
+            elStatus.html('<span class="badge bg-danger">Tidak terhubung</span>');
+            btnKomputerA.prop('disabled', true);
+            Swal.fire({
+                icon: 'error',
+                title: 'Yah...',
+                text: 'Koneksi socket.io terputus!',
+                confirmButtonText: 'Tutup'
+            });
+
+            disconnectSound.play();
+        });
+
+        /* TERIMA NOTIFIKASI SERVER */
+        socket.on('client_notification', function(data) {
+            if(data.komputer === 'B')
+                var audio = new Audio('assets/sound/notification_2.mp3');
+                audio.play();
+                toastr.success(data.notifikasi, 'Notifikasi');
+
+        });
+
+        /* BUTTON KOMPUTER A */
+        btnKomputerA.on('click', function(){
+            /* KIRIM NOTIF KE SERVER UNTUK KOMPUTER A */
+            socket.emit('server_notification',
+            {
+                'komputer': 'A',
+                'notifikasi' : 'Notifikasi dari komputer B'
+            });
+        });
+        
+    </script>
+</html>

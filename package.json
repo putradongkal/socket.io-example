@@ -1,0 +1,12 @@
+{
+  "name": "socket.io-example",
+  "version": "1.0.0",
+  "description": "Contoh socket.io",
+  "main": "app.js",
+  "author": "Irfan",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "latest",
+    "express": "latest"
+  }
+}
